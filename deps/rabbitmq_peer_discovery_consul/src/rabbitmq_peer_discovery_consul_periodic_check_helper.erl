@@ -78,7 +78,7 @@ set_up_periodic_periodic_check() ->
             %% timer.
             %%
             %% Instead we delegate to a locally registered gen_server,
-            %% `rabbitmq_peer_discovery_consul_health_check_helper`.
+            %% `rabbitmq_peer_discovery_consul_periodic_check_helper`.
             %%
             %% The register step cannot call this gen_server either because when mnesia is
             %% started the plugins are not yet loaded.
@@ -88,7 +88,7 @@ set_up_periodic_periodic_check() ->
             %% notifications
 
             IntervalInMs = Interval * 500, % note this is 1/2
-            rabbit_log:info("Starting Consul health check notifier (effective interval: ~tp milliseconds)", [IntervalInMs]),
+            rabbit_log:info("Starting Consul periodic check notifier (effective interval: ~tp milliseconds)", [IntervalInMs]),
             {ok, TRef} = timer:apply_interval(IntervalInMs, rabbit_peer_discovery_consul,
                                               send_periodic_check, []),
             {ok, #state{timer_ref = TRef}}

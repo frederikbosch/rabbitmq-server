@@ -22,12 +22,12 @@ init([]) ->
     Fun0 = fun() -> {ok, {Flags, []}} end,
     Fun1 = fun() -> {ok, {Flags, []}} end,
     Fun2 = fun(_) ->
-                   Specs = [#{id       => rabbitmq_peer_discovery_consul_health_check_helper,
-                              start    => {rabbitmq_peer_discovery_consul_health_check_helper, start_link, []},
+                   Specs = [#{id       => rabbitmq_peer_discovery_consul_periodic_check_helper,
+                              start    => {rabbitmq_peer_discovery_consul_periodic_check_helper, start_link, []},
                               restart  => permanent,
                               shutdown => ?SUPERVISOR_WAIT,
                               type     => worker,
-                              modules  => [rabbitmq_peer_discovery_consul_health_check_helper]
+                              modules  => [rabbitmq_peer_discovery_consul_periodic_check_helper]
                              }],
                    {ok, {Flags, Specs}}
            end,
