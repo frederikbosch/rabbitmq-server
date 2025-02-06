@@ -11,7 +11,7 @@
 %% and cleaned up by the timer server when the short lived
 %% process terminates.
 
--module(rabbitmq_peer_discovery_consul_health_check_helper).
+-module(rabbitmq_peer_discovery_consul_periodic_check_helper).
 
 -behaviour(gen_server).
 
@@ -33,17 +33,12 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    case rabbit_peer_discovery:should_perform_registration() of
-        true ->
-            case rabbit_peer_discovery:backend() of
-                rabbit_peer_discovery_consul ->
-                    set_up_periodic_health_check();
-                rabbitmq_peer_discovery_consul ->
-                    set_up_periodic_health_check();
-                _ ->
-                    {ok, #state{}}
-            end;
-        false ->
+    case rabbit_peer_discovery:backend() of
+        rabbit_peer_discovery_consul ->
+            set_up_periodic_periodic_check();
+        rabbitmq_peer_discovery_consul ->
+            set_up_periodic_periodic_check();
+        _ ->
             {ok, #state{}}
     end.
 
@@ -70,7 +65,7 @@ code_change(_OldVsn, State, _Extra) ->
 %% Implementation
 %%
 
-set_up_periodic_health_check() ->
+set_up_periodic_periodic_check() ->
     M = rabbit_peer_discovery_config:config_map(peer_discover_consul),
     case rabbit_peer_discovery_config:get(consul_svc_ttl, ?CONFIG_MAPPING, M) of
         undefined ->
@@ -95,6 +90,6 @@ set_up_periodic_health_check() ->
             IntervalInMs = Interval * 500, % note this is 1/2
             rabbit_log:info("Starting Consul health check notifier (effective interval: ~tp milliseconds)", [IntervalInMs]),
             {ok, TRef} = timer:apply_interval(IntervalInMs, rabbit_peer_discovery_consul,
-                                              send_health_check_pass, []),
+                                              send_periodic_check, []),
             {ok, #state{timer_ref = TRef}}
     end.
