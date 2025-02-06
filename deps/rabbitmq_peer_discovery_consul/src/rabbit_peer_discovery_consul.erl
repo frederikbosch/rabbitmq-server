@@ -566,7 +566,7 @@ send_periodic_check() ->
             send_health_check_pass(),
             ok;
         false ->
-            list_nodes(),
+            wait_for_list_nodes(),
             ok
     end.
 
