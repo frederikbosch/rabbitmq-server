@@ -33,7 +33,7 @@ start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
 
 init([]) ->
-    case rabbit_peer_discovery::should_perform_registration() of
+    case rabbit_peer_discovery:should_perform_registration() of
         true ->
             case rabbit_peer_discovery:backend() of
                 rabbit_peer_discovery_consul ->
